@@ -73,3 +73,41 @@
 OS 위에 존재하는 JVM 위에서 실행되기 때문에 운영체제에 독립적으로 실행될 수 있습니다. 하지만, JVM을 사용하기 때문에 많은 메모리를 사용하고 실행 속도가 느리다는 단점이 있습니다. 
 
 실행하는 과정에서 JVM이 반드시 완벽하게 로딩되어야하기 때문에 프로그램의 초기 시작 시간이 C/C++에 비해 2~3배 정도 느리다고 알려져있습니다. 단적인 예로, 콘솔 화면에 달랑 "Hello, World"를 찍는 프로그램이 실행되는 데에도 AWT, Swing, SQL 같은 불필요한 기능까지 모두 로딩된 후에 실행되기 때문에 속도가 느릴 수 밖에 없습니다.
+
+<br>
+
+### 3) String vs StringBuildervs StringBuffer
+
+자바에서 문자열을 다루는 객체는 크게 `String`, `StringBuffer`, `StringBuilder` 3개가 있습니다.
+
+- String 객체
+  - immutable 합니다. 즉, 한 번 생성이 되면 변경이 불가능 합니다.
+  - 우리가 알고 있는 String 더하기 연산을 하여 2개의 String 객체를 붙일 시 새로운 객체가 생성되어 재할당되는 것입니다. 다라서, `Heap` 영역에 참조를 잃은 문자열 객체가 계속해서 쌓이게 되고, `GC`에 의해 수거가 되지만 메모리 관리 측면에서 좋지 않습니다. 
+- StringBuilder
+  - mutable 합니다. append() 메소드를 지원해서 문자열 값을 변경할 수 있습니다.
+  - 멀티쓰레드 환경에서 동기화를 보장한다.
+- StringBuffer
+  - 멀티쓰레드 환경에서 동기화를 보장하는 StringBuilder
+
+```java
+String str1 = "hello";
+String str2 = "world";
+StringBuilder str3 = new StringBuilder("hello");
+StringBuilder str4 = new StringBuilder("world");
+
+System.out.println("str1.hashCode() = " + str1.hashCode());
+System.out.println("str2.hashCode() = " + str2.hashCode());
+System.out.println("str1 + str2 = " + (str1 + str2).hashCode()); // 새로운 객체 생성
+System.out.println("str3.hashCode() = " + str3.hashCode());
+System.out.println("str3 + str4 =  " + str3.append(str4).hashCode()); // str3 객체에 값이 변경
+
+/*
+str1.hashCode() = 99162322
+str2.hashCode() = 113318802
+str1 + str2 = -1524582912
+str3.hashCode() = 391447681
+str4.hashCode() = 1935637221
+str3 + str4 =  391447681 
+*/
+```
+
