@@ -1,6 +1,14 @@
-### 04) equals vs ==
+### 04) equals, ==
 
 공통적으로 둘다 모두 양 쪽에 있는 내용을 비교한 후에 boolean type으로 반환한다.
+
+#### [ == ]
+
+`==` 비교는 단순히 주소값을 비교하는 연산입니다. 즉, 비교 대상이 서로 같은 곳을 가리키고 있는지 물어보는 연산입니다.
+
+자바에서 `Primitive Type` 은 그 안에 담겨있는 `Value`가 같다면 모두 같은 주소를 가리키고 있으므로 `Primitive Type` 을 비교할 때는 `==` 연산을 사용해도 값 비교를 할 수 있습니다. 하지만, `Primitive Type`이 아닌 객체들은 그 안에 담겨있는 `Value`가 같더라도 주소가 다를 수 있습니다. 따라서, `==` 을 이용해 비교를 하게 되면 두 객체의 내용이 아니라 단순히 가리키고 있는 주소만 비교하게 됩니다. 이를 해결하기 위해 모든 객체는 `equals` 메소드를 가지고 있습니다.
+
+<br>
 
 #### [ equals ]
 
@@ -16,9 +24,7 @@ boolean equals(Obejct obj)
 
 즉, 2개의 객체가 가리키는 곳이 동일한 메모리 주소일 경우에만 동일한 객체가 된다.
 
-하지만, `String` 클래스를 생각해보면 `equals` 메소드를 이용해 동일한 객체를 참조하는 것인지가 아니라, 안에 있는 문자열이 같은지 확인을 할 수 있다. 이처럼 우리가 사용하는 `String` 클래스 등은 `equals` 메소드를 오버라이딩해서 사용하고 있다.
-
-`equals` 메소드는 `hashCode` 메소드를 이용해 비교를 진행하게 됩니다.
+하지만, `String` 클래스를 생각해보면 `equals` 메소드를 이용해 동일한 객체를 참조하는 것인지가 아니라, 안에 있는 문자열이 같은지 확인을 할 수 있다. 이처럼 `equals` 메소드를 오버라이딩해서 상황에 맞게 사용할 수 있습니다.
 
 <br>
 
@@ -36,33 +42,26 @@ public native int hashCode();
 
 #### [ equals와 hashCode의 관계 ]
 
-동일한 객체는 동일한 메모리 주소를 갖는다는 것을 의미하므로, 동일한 객체는 동일한 해시코드를 가져야 한다. 그렇기 때문에 만약 우리가 equals() 메소드를 오버라이드 한다면, hashCode() 메소드도 오버라이드 되어야 한다.
+동일한 객체는 동일한 메모리 주소를 갖는다는 것을 의미하므로, 동일한 객체는 동일한 해시코드를 가져야 한다. 또, `HashSet`, `HashMap`, `Hashtable`과 같은 프레임워크에서 객체의 비교시 `hashCode()` 결과값을 통해 비교하기 때문에 `equals()`를 오버라이드 할 때, `hashCode()`도 오버라이드 해주는 것이 좋다.
 
-이러한 equals와 hashCode의 관계를 정의하면 다음과 같다.
-
-- Java 프로그램을 실행하는 동안 equals에 사용된 정보가 수정되지 않았다면, hashCode는 항상 동일한 정수값을 반환해야 한다. (Java의 프로그램을 실행할 때 마다 달라지는 것은 상관이 없다.)
-- 두 객체가 equals()에 의해 동일하다면, 두 객체의 hashCode() 값도 일치해야 한다.
-- 두 객체가 equals()에 의해 동일하지 않다면, 두 객체의 hashCode() 값은 일치하지 않아도 된다.
-
-즉, obj1.equals(obj2) == True 이면 hashCode(obj1) == hashCode(obj2) 이여야하지만 hashCode(obj1) == hashCode(obj2) 라고 obj1.equals(obj2) == True일 필요는 없다.
-
-하지만 우리는 다른 객체에 대해 동일한 hashCode를 생성한다면 hashTable을 생성하는데 불이익을 받을 수 있음을 인지하고 있어야 한다.
+- hashCode() 값이 같다면, equals() 결과는 true여야한다.
 
 <br>
 
-#### [ == ]
-
-== 는 단순히 주소값을 비교하는 연산이다.
+#### [ 예시 ]
 
 ```java
+int num1 = 1;
+int num2 = 1;
 String str1 = "aaa";
 String str2 = new String("aaa");
 System.out.println("str1 == str2 : " + (str1 == str2));
 System.out.println("str1 equals str2 : " + (str1.equals(str2)));
-
+System.out.println("num1 == num2 : " + (num1 == num2));
 // 출력
 str1 == str2 : false
 str1 equals str2 : true
+num1 == num2 : true
 ```
 
 ==연산자와 String클래스의 equals()메소드의 가장 큰 차이점은 == 연산자는 비교하고자 하는 두개의 대상의 주소값을 비교하는데 반해 String클래스의 equals 메소드는 비교하고자 하는 두개의 대상의 값 자체를 비교합니다. 
